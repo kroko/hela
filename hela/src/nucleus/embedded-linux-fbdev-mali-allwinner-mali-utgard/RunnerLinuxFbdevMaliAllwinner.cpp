@@ -309,7 +309,7 @@ namespace hela { namespace nucleus {
     catch (std::exception &e){
       //--breaker-catch-forward
       // let us set this forward as user code might not use vao and if it does, then logs will show the reason
-      spdlog::error("VAO test generation exception, , VAOs will probably not wok. what: {}", e.what());
+      spdlog::error("VAO test generation exception, VAOs will probably not wok. {}", e.what());
     }
     catch (...) {
       //--breaker-catch-forward

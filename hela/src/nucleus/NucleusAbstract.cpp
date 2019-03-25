@@ -118,7 +118,7 @@ namespace hela { namespace nucleus {
       spdlog::trace("NucleusAbstract Current assets path is {}", m_AssetDirectoryPath);
     }
     catch (std::exception &e) {
-      throw std::runtime_error("Cannot create paths to binary and assets as somebody has messed up command line arguments holder, what: " + std::string(e.what()));
+      throw std::runtime_error("Cannot create paths to binary and assets as somebody has messed up command line arguments holder: " + std::string(e.what()));
     }
     catch (...) {
       throw std::runtime_error("Cannot create paths to binary and assets as somebody has messed up command line arguments holder");
@@ -158,10 +158,10 @@ namespace hela { namespace nucleus {
       launch();
     }
     catch (std::exception &e) {
-      throw std::runtime_error("executeLaunch: Uncaught exception got back to Nucleus launch, what: " + std::string(e.what()));
+      throw std::runtime_error("executeLaunch got exception from launch: " + std::string(e.what()));
     }
     catch (...) {
-      throw std::runtime_error("executeLaunch: Uncaught exception got back to Nucleus launch");
+      throw std::runtime_error("executeLaunch got exception from launch");
     }
   }
 

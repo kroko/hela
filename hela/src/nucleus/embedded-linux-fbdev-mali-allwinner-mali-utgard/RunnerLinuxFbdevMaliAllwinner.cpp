@@ -177,9 +177,9 @@ namespace hela { namespace nucleus {
     // --------------------------------
     motor_egl_aw::EGLBoolean eglSurfaceAttribResult;
     eglSurfaceAttribResult = motor_egl_aw::eglSurfaceAttrib(m_eglDisplayObj, m_eglSurfaceObj, EGL_MULTISAMPLE_RESOLVE, EGL_MULTISAMPLE_RESOLVE_DEFAULT);
-    spdlog::trace("eglSurfaceAttrib: EGL_MULTISAMPLE_RESOLVE: {0:d} (0x{0:x})", eglSurfaceAttribResult);
+    spdlog::trace("eglSurfaceAttrib for EGL_MULTISAMPLE_RESOLVE set to EGL_MULTISAMPLE_RESOLVE_DEFAULT. result: {0:d} (0x{0:x})", eglSurfaceAttribResult);
     eglSurfaceAttribResult = motor_egl_aw::eglSurfaceAttrib(m_eglDisplayObj, m_eglSurfaceObj, EGL_SWAP_BEHAVIOR, EGL_BUFFER_DESTROYED);
-    spdlog::trace("eglSurfaceAttrib: EGL_SWAP_BEHAVIOR: {0:d} (0x{0:x})", eglSurfaceAttribResult);
+    spdlog::trace("eglSurfaceAttrib for EGL_SWAP_BEHAVIOR set to EGL_BUFFER_DESTROYED. result: {0:d} (0x{0:x})", eglSurfaceAttribResult);
 
     // --------------------------------
     // EGLContext m_eglContextObj;

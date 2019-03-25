@@ -132,7 +132,7 @@ namespace hela { namespace nucleus {
     };
 
     eglChooseConfigResult = motor_egl_aw::eglChooseConfig(m_eglDisplayObj, eglChooseConfigAttribList, &eglConfigObj, 1, &eglChooseConfigCount);
-    if (eglChooseConfigResult == EGL_FALSE || glChooseConfigCount < 1 || eglConfigObj == NULL){
+    if (eglChooseConfigResult == EGL_FALSE || eglChooseConfigCount < 1 || eglConfigObj == NULL){
       spdlog::error("eglChooseConfig failed to choose config. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
       spdlog::error("eglChooseConfig reported config count:  {}", eglChooseConfigCount);
       //--breaker-misc
@@ -327,7 +327,7 @@ namespace hela { namespace nucleus {
         runnerTermiosLock_();
       }
 
-      // Clean out OpenGL errors that might happen due to some bugs so that they don't fall into usercode
+      // Clean out any OpenGL errors, because I said so
       GLenum err;
       while ((err = glGetError()) != GL_NO_ERROR) {
         spdlog::error("Cleaning out OpenGL errors: {0:d} (0x{0:x})", err);

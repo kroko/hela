@@ -556,7 +556,7 @@ namespace hela { namespace nucleus {
     // --------------------------------
     try {
 
-      // Clean out OpenGL errors that might happen due to some bugs so that they don't fall into usercode
+      // Clean out any OpenGL errors, because I said so
       GLenum err;
       while ((err = glGetError()) != GL_NO_ERROR) {
         spdlog::error("Cleaning out OpenGL errors: {0:d} (0x{0:x})", err);

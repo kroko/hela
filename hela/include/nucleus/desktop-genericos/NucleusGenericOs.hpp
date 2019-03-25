@@ -71,7 +71,7 @@ namespace hela { namespace nucleus {
       NucleusGenericOs::cleanupLaunch();
     }
     catch (std::exception &e){
-      spdlog::error("Main got excepton: ", e.what());
+      spdlog::error("Main got excepton: {}", e.what());
     }
     catch (...) {
       spdlog::error("Main got excepton");

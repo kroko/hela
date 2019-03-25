@@ -53,9 +53,10 @@ namespace hela { namespace nucleus {
     // --------------------------------
     m_eglDisplayObj = motor_egl_aw::eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if (m_eglDisplayObj == EGL_NO_DISPLAY) {
-      spdlog::error("eglGetDisplay: No EGL Display {}", m_eglDisplayObj);
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglGetDisplay said no EGL Display. Aborting.");
     }
     else {
       spdlog::trace("eglGetDisplay: Got EGL Display {}", m_eglDisplayObj);
@@ -66,19 +67,22 @@ namespace hela { namespace nucleus {
     motor_egl_aw::EGLint eglVersionMajor, eglVersionMinor;
     eglInitializeResult = motor_egl_aw::eglInitialize(m_eglDisplayObj, &eglVersionMajor, &eglVersionMinor);
     if (eglInitializeResult == EGL_FALSE) {
-      spdlog::error("eglInitialize: Failed to initialize GL: EGL_FALSE");
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglInitialize failed with EGL_FALSE. Aborting.");
     }
     else if (eglInitializeResult == EGL_NOT_INITIALIZED) {
-      spdlog::error("eglInitialize: Failed to initialize GL: EGL_NOT_INITIALIZED");
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglInitialize failed with EGL_NOT_INITIALIZED. Aborting.");
     }
     else if (eglInitializeResult == EGL_BAD_DISPLAY) {
-      spdlog::error("eglInitialize: Failed to initialize GL: EGL_BAD_DISPLAY");
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglInitialize failed with EGL_BAD_DISPLAY. Aborting.");
     }
     else {
       spdlog::trace("eglInitialize: EGL version: {}.{}", eglVersionMajor, eglVersionMinor);
@@ -92,6 +96,8 @@ namespace hela { namespace nucleus {
       spdlog::error("eglBindAPI failed. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglBindAPI failed. Aborting.");
     }
     else {
       spdlog::trace("eglBindAPI: API bound");
@@ -126,15 +132,13 @@ namespace hela { namespace nucleus {
     };
 
     eglChooseConfigResult = motor_egl_aw::eglChooseConfig(m_eglDisplayObj, eglChooseConfigAttribList, &eglConfigObj, 1, &eglChooseConfigCount);
-    if (eglChooseConfigResult == EGL_FALSE){
-      spdlog::error("eglChooseConfig: Failed to choose config. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
+    if (eglChooseConfigResult == EGL_FALSE || glChooseConfigCount < 1 || eglConfigObj == NULL){
+      spdlog::error("eglChooseConfig failed to choose config. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
+      spdlog::error("eglChooseConfig reported config count:  {}", eglChooseConfigCount);
       //--breaker-misc
       ghostBuster_();
-    }
-    else if (eglChooseConfigCount < 1 || eglConfigObj == NULL) {
-      spdlog::error("eglChooseConfig: no matching configs. config count reported:  {}", eglChooseConfigCount);
-      //--breaker-misc
-      ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglChooseConfig failed. Aborting.");
     }
     else {
       spdlog::trace("eglChooseConfig: EGL chose config, having count of {}", eglChooseConfigCount);
@@ -157,12 +161,14 @@ namespace hela { namespace nucleus {
     // EGLSurface m_eglSurfaceObj;
     m_eglSurfaceObj = motor_egl_aw::eglCreateWindowSurface(m_eglDisplayObj, eglConfigObj, m_eglWindowNative.get(), eglCreateWindowSurfaceAttribList);
     if (m_eglSurfaceObj == EGL_NO_SURFACE) {
-      spdlog::error("eglCreateWindowSurface: Failed to create surface. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
-      spdlog::error("!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?");
+      spdlog::error("eglCreateWindowSurface failed to create surface. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
+      spdlog::error("!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!");
       spdlog::error("DID YOU SET --width AND --height LARGER THAN YOUR MONITOR RESOLUTION?");
-      spdlog::error("!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?");
+      spdlog::error("!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!?!");
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglCreateWindowSurface failed. Aborting.");
     }
     else {
       spdlog::trace("eglCreateWindowSurface: Created surface");
@@ -186,6 +192,8 @@ namespace hela { namespace nucleus {
       spdlog::error("eglCreateContext: Failed to create context. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglCreateContext failed. Aborting.");
     }
     else {
       spdlog::trace("eglCreateContext: Created context");
@@ -198,6 +206,8 @@ namespace hela { namespace nucleus {
       spdlog::error("eglMakeCurrent: Failed to connect context to surface. eglGetError: {0:d} (0x{0:x})", motor_egl_aw::eglGetError());
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("eglMakeCurrent failed. Aborting.");
     }
     else {
       spdlog::trace("eglMakeCurrent: Connected context to surface");
@@ -299,7 +309,7 @@ namespace hela { namespace nucleus {
     catch (std::exception &e){
       //--breaker-catch-forward
       // let us set this forward as user code might not use vao and if it does, then logs will show the reason
-      spdlog::error("VAO test generation exception, , VAOs will probably not wok. what: ", e.what());
+      spdlog::error("VAO test generation exception, , VAOs will probably not wok. what: {}", e.what());
     }
     catch (...) {
       //--breaker-catch-forward
@@ -349,7 +359,7 @@ namespace hela { namespace nucleus {
 
       }
 
-      // Join before cleanup, as cleanup may have long execution
+      // Join before cleanup, as user cleanup may have long execution
       if (m_nucleusSettings.isUserInputAllowed()) {
         helaIoThreadJoin_();
       }
@@ -362,11 +372,12 @@ namespace hela { namespace nucleus {
       m_Nucleus->abstractCleanup_();
 
     }
+    // don't rethrow here, log and pass to ghostBuster_ for orderly egl cleanup
     catch (std::exception &e){
       //--breaker-catch-forward
-      // not entirely true as we have also i/O thread in scope
+      // not entirely true as we have also input thread related and egl stuff in scope
       spdlog::error("User code threw and it was was not caught earlier (setup() should rethrow intentionally on shader, texture etc. errors).");
-      spdlog::error("User code exception: ", e.what());
+      spdlog::error("User code exception: {}", e.what());
     }
     catch (...) {
       //--breaker-catch-forward
@@ -383,6 +394,9 @@ namespace hela { namespace nucleus {
 
     // --------------------------------
     //--breaker-nocatch-begin
+
+    // if not closed already
+    helaIoThreadJoin_();
 
     if (m_eglDisplayObj != EGL_NO_DISPLAY) {
       // Destroy things
@@ -617,7 +631,8 @@ namespace hela { namespace nucleus {
     std::unique_lock<std::mutex> lockerStreamOpen(m_mutexIoMain);
 
     if (std::this_thread::get_id() == m_runnerThreadId) {
-      spdlog::error("You have put keyboard and mouse readouts in same thread as main thread! Let's push those SoC's multicores (unless context switching on this SoC makes things worse ^_^)!");
+      spdlog::error("This should not have happened. Keyboard and mouse readouts in same thread as main thread! Let's push those SoC's multicores (unless context switching on this SoC makes things worse ^_^)! I will throw!");
+      throw std::runtime_error("Multithreaded input routine is wrong, plain wrong. Aborting.");
     }
 
     m_flagHasKeyboard = openDevice("GL_KEYBOARD", "event-kbd", m_fileDescriptorKeyboard, runnerLockExclusiveKeyboard);

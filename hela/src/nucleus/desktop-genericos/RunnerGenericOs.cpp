@@ -225,7 +225,7 @@ namespace hela { namespace nucleus {
     if (motor_glfw::glfwInit() == GLFW_FALSE)
     {
       //--breaker-throw
-      throw std::runtime_error("GLFW init failed. ABORTING.");
+      throw std::runtime_error("GLFW init failed. Aborting.");
     }
 
     NucleusGlfwCallbacks::registerNucleus(aNucleus);
@@ -403,9 +403,10 @@ namespace hela { namespace nucleus {
                                          nullptr);
 
     if (m_glfwWindowObj == nullptr) {
-      spdlog::critical("Failed to create GLFW window. ABORTING.");
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("Failed to create GLFW window. Aborting.");
     }
 
     // glfwSetWindowSize(m_glfwWindowObj, 600, 600);
@@ -495,9 +496,10 @@ namespace hela { namespace nucleus {
     motor_glfw::glfwMakeContextCurrent(m_glfwWindowObj);
 
     if (!::gladLoadGL()) {
-      spdlog::error("GLAD load failed. ABORTING.");
       //--breaker-misc
       ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("GLAD load failed. Aborting.");
     }
 
     // --------------------------------
@@ -588,11 +590,12 @@ namespace hela { namespace nucleus {
       m_Nucleus->abstractCleanup_();
 
     }
+    // don't rethrow here, log and pass to ghostBuster_ for orderly GLFW cleanup
     catch (std::exception &e){
       //--breaker-catch-forward
-      // not entirely true as we have also glfw in scope
+      // not entirely true as we have also GLFW in scope
       spdlog::error("User code threw and it was was not caught earlier (setup() should rethrow intentionally on shader, texture etc. errors).");
-      spdlog::error("User code exception: ", e.what());
+      spdlog::error("User code exception: {}", e.what());
     }
     catch (...) {
       //--breaker-catch-forward

@@ -593,13 +593,20 @@ namespace hela { namespace nucleus {
     // don't rethrow here, log and pass to ghostBuster_ for orderly GLFW cleanup
     catch (std::exception &e){
       //--breaker-catch-forward
-      // not entirely true as we have also GLFW in scope
-      spdlog::error("User code threw and it was was not caught earlier (setup() should rethrow intentionally on shader, texture etc. errors).");
-      spdlog::error("User code exception: {}", e.what());
+      spdlog::error("User code threw. Probably. User code can avoid catching or throw intentionally on shader, texture a.o. errors.");
+      //--breaker-misc
+      // do orderly cleanup, assuming it is user code
+      ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("From run loop: " + std::string(e.what()));
     }
     catch (...) {
       //--breaker-catch-forward
-      spdlog::error("User code threw.");
+      //--breaker-misc
+      // do orderly cleanup, assuming it is user code
+      ghostBuster_();
+      //--breaker-throw
+      throw std::runtime_error("User code threw. Probably.");
     }
 
     // --------------------------------

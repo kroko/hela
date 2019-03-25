@@ -25,7 +25,7 @@ namespace hela { namespace nucleus {
     bool isFullScreen() const override;
 
     template<typename NucleusT>
-    static void main(
+    static int main(
                      int argc,
                      char const * const argv[],
                      const NucleusSettingsFn &nucleusSettingsFn = NucleusSettingsFn(),
@@ -43,7 +43,7 @@ namespace hela { namespace nucleus {
   }; // NucleusGenericOs
 
   template<typename NucleusT>
-  void NucleusGenericOs::main(
+  int NucleusGenericOs::main(
                               int argc,
                               char const * const argv[],
                               const NucleusSettingsFn &nucleusSettingsFn,
@@ -72,10 +72,14 @@ namespace hela { namespace nucleus {
     }
     catch (std::exception &e){
       spdlog::error("Main got excepton: {}", e.what());
+      return 1;
     }
     catch (...) {
       spdlog::error("Main got excepton");
+      return 1;
     }
+
+    return 0;
 
   } // main
 

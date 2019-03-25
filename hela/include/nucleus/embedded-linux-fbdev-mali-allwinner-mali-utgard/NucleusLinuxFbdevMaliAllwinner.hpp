@@ -23,7 +23,7 @@ namespace hela { namespace nucleus {
     bool eventHasMouse(bool /*fakeReturnValue*/ = true) const override;
 
     template<typename NucleusT>
-    static void main(
+    static int main(
                      int argc,
                      char const * const argv[],
                      const NucleusSettingsFn &settingsFn = NucleusSettingsFn(),
@@ -41,7 +41,7 @@ namespace hela { namespace nucleus {
   }; // NucleusLinuxFbdevMaliAllwinner
 
   template<typename NucleusT>
-  void NucleusLinuxFbdevMaliAllwinner::main(
+  int NucleusLinuxFbdevMaliAllwinner::main(
                                             int argc,
                                             char const * const argv[],
                                             const NucleusSettingsFn &nucleusSettingsFn,
@@ -69,10 +69,14 @@ namespace hela { namespace nucleus {
     }
     catch (std::exception &e){
       spdlog::error("Main got excepton: {}", e.what());
+      return 1;
     }
     catch (...) {
       spdlog::error("Main got excepton");
+      return 1;
     }
+
+    return 0;
 
   } // main
 

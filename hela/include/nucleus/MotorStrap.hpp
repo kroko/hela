@@ -79,13 +79,13 @@ extern GLboolean glIsVertexArray(GLuint array);
 // sRGB internals polyfill
 // Redirect GLES to use known internal non-sRGB format
 
-#if !defined(GL_SRGB)
-  #define GL_SRGB GL_RGB
-#endif
-
-#if !defined(GL_SRGB_ALPHA)
-  #define GL_SRGB_ALPHA GL_RGBA
-#endif
+//#if !defined(GL_SRGB)
+//  #define GL_SRGB GL_RGB
+//#endif
+//
+//#if !defined(GL_SRGB_ALPHA)
+//  #define GL_SRGB_ALPHA GL_RGBA
+//#endif
 
 // ----------------------------------------------------------------------------
 // half float datatype polyfill

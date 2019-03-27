@@ -285,9 +285,45 @@ namespace hela { namespace nucleus {
 
 } }
 
-// SoC is low memory, tie down vtable
 namespace hela { namespace motor {
+
+  // SoC is low memory, tie down vtable
   Motor::~Motor() {
     spdlog::trace("Motor destruct");
   }
+
+  bool isExtensionSupported(std::string extensionName) {
+#if defined(HELA_LINUX_ARM_FBDEV_MALI_ALLWINNER)
+    const char* extension = extensionName.c_str();
+    // copy-paste https://www.opengl.org/archives/resources/features/OGLextensions/
+    const GLubyte *extensions = NULL;
+    const GLubyte *start;
+    GLubyte *where, *terminator;
+    where = (GLubyte *)strchr(extension, ' ');
+    if (where || *extension == '\0')
+      return 0;
+    extensions = glGetString(GL_EXTENSIONS);
+    start = extensions;
+    for (;;)
+    {
+      where = (GLubyte *)strstr((const char *)start, extension);
+      if (!where)
+        break;
+      terminator = where + strlen(extension);
+      if (where == start || *(where - 1) == ' ')
+        if (*terminator == ' ' || *terminator == '\0')
+          return 1;
+      start = terminator;
+    }
+    return 0;
+#else
+    spdlog::warn("You are not on Allwinner! isExtensionSupported blindly saying yes for {} as it makes no sense to check them on devbench.", extensionName);
+    return 1;
+#endif
+  }
+
+  bool isExtensionSupported(const char* extensionName) {
+    return isExtensionSupported(std::string(extensionName));
+  }
+
 } }
